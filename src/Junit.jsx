@@ -1,45 +1,48 @@
 import React, { useState } from 'react';
 
-function TestNGSimulator() {
-  const [input, setInput] = useState('');
-  const [result, setResult] = useState(null);
-  const [testStatus, setTestStatus] = useState('');
+const ParallelTestSimulation = () => {
+  const [testResults, setTestResults] = useState([]);
+  const [isRunning, setIsRunning] = useState(false);
 
-  const validateLogin = (username, password) => {
-    // Simulate a simple login validation function
-    return username === 'admin' && password === 'password123';
-  };
+  const simulateTestRun = () => {
+    setIsRunning(true);
+    setTestResults([]);
+    
+    // Simulating three tests running in parallel
+    const test1 = new Promise(resolve => {
+      setTimeout(() => resolve("Test 1 Passed"), 1000);
+    });
+    const test2 = new Promise(resolve => {
+      setTimeout(() => resolve("Test 2 Passed"), 800);
+    });
+    const test3 = new Promise(resolve => {
+      setTimeout(() => resolve("Test 3 Passed"), 1200);
+    });
 
-  const handleTest = () => {
-    const [username, password] = input.split(',');
-    const isValid = validateLogin(username.trim(), password.trim());
-
-    if (isValid) {
-      setTestStatus('Test Passed!');
-      setResult('You are logged in!');
-    } else {
-      setTestStatus('Test Failed');
-      setResult('Invalid credentials!');
-    }
+    // Wait for all tests to complete
+    Promise.all([test1, test2, test3])
+      .then(results => {
+        setTestResults(results);
+        setIsRunning(false);
+      });
   };
 
   return (
     <div>
-      <h1>TestNG Simulator: Login Validation</h1>
-      <input 
-        type="text" 
-        placeholder="Enter username, password" 
-        value={input} 
-        onChange={(e) => setInput(e.target.value)} 
-      />
-      <button onClick={handleTest}>Run Test</button>
+      <h2>TestNG Parallel Test Simulation</h2>
+      <button onClick={simulateTestRun} disabled={isRunning}>
+        {isRunning ? "Running..." : "Run Tests in Parallel"}
+      </button>
       
-      <div>
-        <p>Status: <span style={{ color: testStatus === 'Test Passed!' ? 'green' : 'red' }}>{testStatus}</span></p>
-        <p>Result: {result}</p>
-      </div>
+      {isRunning && <p>Tests are running. Please wait...</p>}
+      
+      <ul>
+        {testResults.map((result, index) => (
+          <li key={index}>{result}</li>
+        ))}
+      </ul>
     </div>
   );
-}
+};
 
-export default TestNGSimulator;
+export default ParallelTestSimulation;
