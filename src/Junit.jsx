@@ -1,48 +1,42 @@
 import React, { useState } from 'react';
 
-const ParallelTestSimulation = () => {
-  const [testResults, setTestResults] = useState([]);
-  const [isRunning, setIsRunning] = useState(false);
-
-  const simulateTestRun = () => {
-    setIsRunning(true);
-    setTestResults([]);
+const TestNGReportGenerator = () => {
+  const [status, setStatus] = useState('');
+  const [message, setMessage] = useState('');
+  
+  const generateReport = () => {
+    setStatus('Generating...');
+    setMessage('Fetching the test results...');
     
-    // Simulating three tests running in parallel
-    const test1 = new Promise(resolve => {
-      setTimeout(() => resolve("Test 1 Passed"), 1000);
-    });
-    const test2 = new Promise(resolve => {
-      setTimeout(() => resolve("Test 2 Passed"), 800);
-    });
-    const test3 = new Promise(resolve => {
-      setTimeout(() => resolve("Test 3 Passed"), 1200);
-    });
+    setTimeout(() => {
+      setStatus('Completed');
+      setMessage('TestNG report generated successfully!');
+    }, 2000); // Simulate delay in generating report
+  };
 
-    // Wait for all tests to complete
-    Promise.all([test1, test2, test3])
-      .then(results => {
-        setTestResults(results);
-        setIsRunning(false);
-      });
+  const failReport = () => {
+    setStatus('Failed');
+    setMessage('An error occurred while generating the report.');
   };
 
   return (
     <div>
-      <h2>TestNG Parallel Test Simulation</h2>
-      <button onClick={simulateTestRun} disabled={isRunning}>
-        {isRunning ? "Running..." : "Run Tests in Parallel"}
-      </button>
+      <h2>TestNG Report Generator</h2>
+      <p>Status: <strong>{status}</strong></p>
+      <p>{message}</p>
       
-      {isRunning && <p>Tests are running. Please wait...</p>}
+      <button onClick={generateReport}>Generate Report</button>
+      <button onClick={failReport}>Fail Report</button>
       
-      <ul>
-        {testResults.map((result, index) => (
-          <li key={index}>{result}</li>
-        ))}
-      </ul>
+      <div style={{marginTop: '20px', padding: '10px', border: '1px solid #ccc'}}>
+        <h3>Explanation:</h3>
+        <p>
+          TestNG generates an <code>index.html</code> report by default. This report includes test results like passed, failed, and skipped tests.
+          Additionally, you can customize it by using listeners and external tools like Maven for more advanced reporting.
+        </p>
+      </div>
     </div>
   );
 };
 
-export default ParallelTestSimulation;
+export default TestNGReportGenerator;
