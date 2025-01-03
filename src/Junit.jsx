@@ -1,32 +1,45 @@
 import React, { useState } from 'react';
 
-function TestRunner() {
-  const [testResult, setTestResult] = useState(null);
+function TestNGSimulator() {
+  const [input, setInput] = useState('');
+  const [result, setResult] = useState(null);
+  const [testStatus, setTestStatus] = useState('');
 
-  // Simulating the execution of a test
-  const runTest = () => {
-    const randomTestOutcome = Math.random() > 0.5 ? "Pass" : "Fail";
-    setTestResult(randomTestOutcome);
+  const validateLogin = (username, password) => {
+    // Simulate a simple login validation function
+    return username === 'admin' && password === 'password123';
+  };
+
+  const handleTest = () => {
+    const [username, password] = input.split(',');
+    const isValid = validateLogin(username.trim(), password.trim());
+
+    if (isValid) {
+      setTestStatus('Test Passed!');
+      setResult('You are logged in!');
+    } else {
+      setTestStatus('Test Failed');
+      setResult('Invalid credentials!');
+    }
   };
 
   return (
     <div>
-      <h2>Automated Testing with JUnit + Selenium</h2>
-      <p>Click "Run Test" to simulate a Selenium + JUnit test execution!</p>
-      <button onClick={runTest}>Run Test</button>
-
-      {testResult && (
-        <div style={{ marginTop: "20px" }}>
-          <h3>Test Result: {testResult}</h3>
-          {testResult === "Pass" ? (
-            <p style={{ color: "green" }}>✅ The test passed successfully!</p>
-          ) : (
-            <p style={{ color: "red" }}>❌ The test failed. Check your code!</p>
-          )}
-        </div>
-      )}
+      <h1>TestNG Simulator: Login Validation</h1>
+      <input 
+        type="text" 
+        placeholder="Enter username, password" 
+        value={input} 
+        onChange={(e) => setInput(e.target.value)} 
+      />
+      <button onClick={handleTest}>Run Test</button>
+      
+      <div>
+        <p>Status: <span style={{ color: testStatus === 'Test Passed!' ? 'green' : 'red' }}>{testStatus}</span></p>
+        <p>Result: {result}</p>
+      </div>
     </div>
   );
 }
 
-export default TestRunner;
+export default TestNGSimulator;
